@@ -8,15 +8,37 @@ def usage(msg = None):
 
     log(Mode.ERROR, "usage: ./utils.py <filename>")
 
+def draw_matrix(alphabet, matrix):
+    print("\t-", end=" ")
+    for a in alphabet: print(str(a), end=" ")
+    print("")
+
+    for i, row in enumerate(matrix):
+        print("\t" + str(alphabet[i]), end=" ")
+        for col in row:
+            print(str(col), end=" ")
+        print("")
+
 args = args[1:]
 
 if(len(args) == 0): usage("no file specified!")
 filename = args[0]
 
-mod, labels, matrix = load_matrix(filename)
+mod, alphabet, matrix = load_matrix(filename)
 
 log(Mode.INFO, "Mod: " + str(mod) +
-               "\nLabels: " + str(labels) +
-               "\nData: " + str(matrix))
+               "\nLabels: " + str(alphabet) +
+               "\nGenerated Matrix: ")
 
-log(Mode.INFO, "Is Associative: " + str(is_associative(labels, matrix)))
+draw_matrix(alphabet, matrix)
+
+associative = is_associative_closed(mod, alphabet, matrix)
+log(Mode.INFO, "Is Associative and Closed: " + str(associative))
+
+if(associative):
+    identity = get_identity(alphabet, matrix)
+    log(Mode.INFO, "Identity: " + str(identity))
+
+    if(identity is not None):
+        inverse = get_inverse(identity, alphabet)
+        log(Mode.INFO, "Inverse: " + str(inverse))
